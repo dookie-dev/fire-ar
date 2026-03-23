@@ -58,15 +58,26 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const fileToGet = searchParams.get("file");
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
 
     const { blobs } = await list();
 
-    // Proxy Mode: If ?file=filename.ext is provided, fetch and stream it from private store
+    // Proxy Mode: Fetch and stream private blob content
     if (fileToGet) {
-      const blob = blobs.find(b => b.pathname === fileToGet);
+      const blob = blobs.find((b: any) => b.pathname === fileToGet);
       if (!blob) return NextResponse.json({ error: "File not found" }, { status: 404 });
 
-      const res = await fetch(blob.url);
+      const res = await fetch(blob.url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        const body = await res.text();
+        throw new Error(`Failed to fetch blob from Vercel: ${res.status} ${res.statusText} - ${body}`);
+      }
+
       const data = await res.arrayBuffer();
       
       return new NextResponse(data, {
@@ -77,16 +88,29 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // List Mode: Return metadata and internal proxy URLs
+    // List Mode: Return metadata
     const configBlob = blobs.find((b: any) => b.pathname === "marker-config.json");
     const mindBlob = blobs.find((b: any) => b.pathname === "targets.mind");
     const imageBlob = blobs.find((b: any) => b.pathname === "marker-tracking.png");
 
     let targetCount = 1;
     if (configBlob) {
-      const configRes = await fetch(configBlob.url);
-      const configJson = await configRes.json();
-      targetCount = configJson.targetCount || 1;
+      try {
+        const configRes = await fetch(configBlob.url, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (configRes.ok) {
+          const text = await configRes.text();
+          try {
+            const configJson = JSON.parse(text);
+            targetCount = configJson.targetCount || 1;
+          } catch (e) {
+            console.error("❌ Config parse error. Body was:", text);
+          }
+        }
+      } catch (e: any) {
+        console.warn("Could not fetch config:", e.message);
+      }
     }
 
     return NextResponse.json({
@@ -95,9 +119,9 @@ export async function GET(request: NextRequest) {
       imageUrl: imageBlob ? "/api/upload?file=marker-tracking.png" : null
     });
   } catch (error: any) {
-    console.error("❌ List error:", error);
+    console.error("❌ API Error:", error.message);
     return NextResponse.json({ 
-      error: "Failed to load", 
+      error: "Internal Server Error", 
       details: error.message 
     }, { status: 500 });
   }
