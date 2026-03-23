@@ -46,15 +46,19 @@ function MarkerUploader({ onProcessed }: MarkerUploaderProps) {
       if (files.length > 0) return; 
 
       try {
-        const res = await fetch("/marker-tracking.png");
+        const res = await fetch("/api/upload");
         if (res.ok) {
-          const blob = await res.blob();
-          const file = new File([blob], "marker-tracking.png", { type: blob.type });
-          setFiles([file]);
-          const url = URL.createObjectURL(blob);
-          setPreviews([url]);
-          setStatus("ready");
-          console.log("📂 Pre-loaded existing marker into gallery.");
+          const { imageUrl } = await res.json();
+          if (imageUrl) {
+            const imgRes = await fetch(imageUrl);
+            const blob = await imgRes.blob();
+            const file = new File([blob], "marker-tracking.png", { type: blob.type });
+            setFiles([file]);
+            const url = URL.createObjectURL(blob);
+            setPreviews([url]);
+            setStatus("ready");
+            console.log("📂 Pre-loaded existing marker from Vercel Blob.");
+          }
         }
       } catch (e) {
         console.warn("No existing marker found");
@@ -190,11 +194,22 @@ function MarkerUploader({ onProcessed }: MarkerUploaderProps) {
     if (newFiles.length === 0) setStatus("idle");
   };
 
-  const handleDownloadMind = () => {
-    const link = document.createElement("a");
-    link.href = "/targets.mind";
-    link.download = "targets.mind";
-    link.click();
+  const handleDownloadMind = async () => {
+    try {
+      const res = await fetch("/api/upload");
+      if (res.ok) {
+        const { mindUrl } = await res.json();
+        if (mindUrl) {
+          const link = document.createElement("a");
+          link.href = mindUrl;
+          link.download = "targets.mind";
+          link.target = "_blank";
+          link.click();
+        }
+      }
+    } catch (e) {
+      console.error("Download failed", e);
+    }
   };
 
   const handleClear = () => {

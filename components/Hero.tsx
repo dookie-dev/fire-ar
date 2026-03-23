@@ -105,27 +105,22 @@ export default function Hero() {
       // 🌐 3. Network Sync (First time or clear cache)
       setLoadingMarkers(true);
       try {
-        const [mindRes, imageRes, configRes] = await Promise.all([
-          fetch("/targets.mind"),
-          fetch("/marker-tracking.png"),
-          fetch("/marker-config.json")
-        ]);
+        const apiRes = await fetch("/api/upload");
+        if (apiRes.ok) {
+          const { mindUrl, imageUrl, targetCount } = await apiRes.json();
+          
+          if (mindUrl && imageUrl) {
+            const mindRes = await fetch(mindUrl);
 
-        if (mindRes.ok && imageRes.ok) {
-          const mindBuffer = await mindRes.arrayBuffer();
-          const mindData = new Uint8Array(mindBuffer);
+            if (mindRes.ok) {
+              const mindBuffer = await mindRes.arrayBuffer();
+              const mindData = new Uint8Array(mindBuffer);
 
-          let targetCount = 1;
-          if (configRes.ok) {
-            const config = await configRes.json();
-            targetCount = config.targetCount || 1;
-          }
-
-          const newData = {
-            image: "/marker-tracking.png",
-            mindData: mindData,
-            targetCount: targetCount
-          };
+              const newData = {
+                image: imageUrl,
+                mindData: mindData,
+                targetCount: targetCount
+              };
 
           setMarkerData(newData);
           GLOBAL_MARKER_CACHE = newData;

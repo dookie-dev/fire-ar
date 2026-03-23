@@ -1,48 +1,76 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs/promises";
-import path from "path";
+import { put, list, del } from "@vercel/blob";
 
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File;
     const mindData = formData.get("mindData") as File | null;
-    const targetCount = formData.get("targetCount") || "1"; // Number of images in .mind
+    const targetCount = formData.get("targetCount") || "1";
 
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    const publicPath = path.join(process.cwd(), "public");
-
     // Save Source Image
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const filePath = path.join(publicPath, "marker-tracking.png");
-    await fs.writeFile(filePath, buffer);
+    const imageBlob = await put("marker-tracking.png", bytes, { 
+      access: "public",
+      addRandomSuffix: false
+    });
+
+    let mindPath = null;
 
     // Save Compiled .mind File
     if (mindData) {
       const mindBytes = await mindData.arrayBuffer();
-      const mindBuffer = Buffer.from(mindBytes);
-      const mindFilePath = path.join(publicPath, "targets.mind");
-      await fs.writeFile(mindFilePath, mindBuffer);
+      const mindBlob = await put("targets.mind", mindBytes, {
+        access: "public",
+        addRandomSuffix: false
+      });
+      mindPath = mindBlob.url;
       
-      // Save Config (Target Count)
-      const configPath = path.join(publicPath, "marker-config.json");
-      await fs.writeFile(configPath, JSON.stringify({ targetCount: parseInt(targetCount.toString()) }));
+      // Save Config
+      const configBlob = await put("marker-config.json", JSON.stringify({ targetCount: parseInt(targetCount.toString()) }), {
+        access: "public",
+        addRandomSuffix: false
+      });
       
-      console.log(`✅ Binary marker (.mind) and config saved for ${targetCount} targets.`);
+      console.log(`✅ Binary marker (.mind) and config saved to Vercel Blob for ${targetCount} targets.`);
     }
 
     return NextResponse.json({ 
       success: true, 
-      path: "/marker-tracking.png", 
-      mindPath: mindData ? "/targets.mind" : null,
+      path: imageBlob.url, 
+      mindPath: mindPath,
       targetCount: parseInt(targetCount.toString()) 
     });
   } catch (error) {
     console.error("❌ Upload error:", error);
     return NextResponse.json({ error: "Failed to save marker" }, { status: 500 });
+  }
+}
+
+export async function GET() {
+  try {
+    const { blobs } = await list();
+    const configBlob = blobs.find(b => b.pathname === "marker-config.json");
+    const mindBlob = blobs.find(b => b.pathname === "targets.mind");
+    const imageBlob = blobs.find(b => b.pathname === "marker-tracking.png");
+
+    let targetCount = 1;
+    if (configBlob) {
+      const configRes = await fetch(configBlob.url);
+      const configJson = await configRes.json();
+      targetCount = configJson.targetCount || 1;
+    }
+
+    return NextResponse.json({
+      targetCount,
+      mindUrl: mindBlob?.url || null,
+      imageUrl: imageBlob?.url || null
+    });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to load" }, { status: 500 });
   }
 }
