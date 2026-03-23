@@ -78,9 +78,9 @@ export async function GET(request: NextRequest) {
     }
 
     // List Mode: Return metadata and internal proxy URLs
-    const configBlob = blobs.find(b => b.pathname === "marker-config.json");
-    const mindBlob = blobs.find(b => b.pathname === "targets.mind");
-    const imageBlob = blobs.find(b => b.pathname === "marker-tracking.png");
+    const configBlob = blobs.find((b: any) => b.pathname === "marker-config.json");
+    const mindBlob = blobs.find((b: any) => b.pathname === "targets.mind");
+    const imageBlob = blobs.find((b: any) => b.pathname === "marker-tracking.png");
 
     let targetCount = 1;
     if (configBlob) {
