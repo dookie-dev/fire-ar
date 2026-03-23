@@ -122,10 +122,12 @@ export default function Hero() {
                 targetCount: targetCount
               };
 
-          setMarkerData(newData);
-          GLOBAL_MARKER_CACHE = newData;
-          saveToDisk(newData); // 💾 Persist for next session
-          console.log(`⚡ [Hero] Persistent Cache Updated (${targetCount} targets).`);
+              setMarkerData(newData);
+              GLOBAL_MARKER_CACHE = newData;
+              saveToDisk(newData); // 💾 Persist for next session
+              console.log(`⚡ [Hero] Persistent Cache Updated (${targetCount} targets).`);
+            }
+          }
         }
       } catch (err) {
         console.warn("No existing markers found on server.");
