@@ -45,9 +45,12 @@ export async function POST(request: NextRequest) {
       mindPath: mindPath,
       targetCount: parseInt(targetCount.toString()) 
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("❌ Upload error:", error);
-    return NextResponse.json({ error: "Failed to save marker" }, { status: 500 });
+    return NextResponse.json({ 
+      error: "Failed to save marker", 
+      details: error.message 
+    }, { status: 500 });
   }
 }
 
@@ -70,7 +73,11 @@ export async function GET() {
       mindUrl: mindBlob?.url || null,
       imageUrl: imageBlob?.url || null
     });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to load" }, { status: 500 });
+  } catch (error: any) {
+    console.error("❌ List error:", error);
+    return NextResponse.json({ 
+      error: "Failed to load", 
+      details: error.message 
+    }, { status: 500 });
   }
 }

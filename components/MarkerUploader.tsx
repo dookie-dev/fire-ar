@@ -165,8 +165,12 @@ function MarkerUploader({ onProcessed }: MarkerUploaderProps) {
       formData.append("mindData", mindBlob, "targets.mind");
       formData.append("targetCount", currentFiles.length.toString());
 
-      await fetch("/api/upload", { method: "POST", body: formData });
-      console.log(`💾 Marker data and .mind file saved for ${currentFiles.length} targets.`);
+      const response = await fetch("/api/upload", { method: "POST", body: formData });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || "Upload failed");
+      }
+      console.log(`💾 Marker data and .mind file saved to Vercel Blob for ${currentFiles.length} targets.`);
 
       setProcessing(false);
       setStatus("success");
