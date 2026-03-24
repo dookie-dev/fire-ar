@@ -82,6 +82,7 @@ export default function ARCamera({ isActive = false, onStateChange }: ARCameraPr
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [fireActive, setFireActive] = useState(false);
   const [showQuiz, setShowQuiz] = useState(false);
+  const [intensity, setIntensity] = useState(80); // 🔥 Shared intensity
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const prevFrameRef = useRef<Uint8ClampedArray | null>(null);
   const motionConfirmRef = useRef<number>(0);
@@ -379,13 +380,15 @@ export default function ARCamera({ isActive = false, onStateChange }: ARCameraPr
             />
           </Box>
 
-          {cameraReady && stream && <FireSimulation active={fireActive} />}
+          {cameraReady && stream && <FireSimulation active={fireActive} intensity={intensity} />}
           {showQuiz && (
             <Box sx={{ zIndex: 100, position: "absolute", inset: 0 }}>
                <ARGameUI 
                   isDetected={true}
+                  intensity={intensity}
+                  onIntensityChange={setIntensity}
                   onSimulateDetect={() => { setFireActive(true); setShowQuiz(true); }}
-                  onCorrectComplete={() => { setShowQuiz(false); setFireActive(false); }}
+                  onCorrectComplete={() => { setShowQuiz(false); setFireActive(false); setIntensity(0); }}
                />
             </Box>
           )}
