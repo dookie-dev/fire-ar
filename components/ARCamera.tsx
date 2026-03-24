@@ -174,7 +174,7 @@ export default function ARCamera({ isActive = false, onStateChange }: ARCameraPr
           if (!motionConfirmRef.current) motionConfirmRef.current = 0;
           motionConfirmRef.current += 1;
           
-          if (motionConfirmRef.current > 3) { // Must be detected for 3 consecutive frames
+          if (motionConfirmRef.current >= 2) { // Faster detection (2 frames)
             console.log("🔥 Motion confirmed! Spawning FIREMAN JUNIOR simulation...");
             setFireActive(true);
             setShowQuiz(true);
@@ -189,7 +189,7 @@ export default function ARCamera({ isActive = false, onStateChange }: ARCameraPr
       if (!fireActive) requestAnimationFrame(checkMotion);
     };
 
-    const timeout = setTimeout(checkMotion, 1000);
+    const timeout = setTimeout(checkMotion, 200); // Faster startup
     return () => clearTimeout(timeout);
   }, [cameraReady, fireActive]);
 

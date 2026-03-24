@@ -153,7 +153,7 @@ interface FireSimulationProps {
 }
 
 // Sub-component to ensure R3F context is fully captured without race conditions
-function SimulationContent({ intensity = 80 }: { intensity?: number }) {
+function SimulationContent({ intensity = 80, active = true }: { intensity?: number; active?: boolean }) {
   const bloomIntensity = 1.5 * (intensity / 80);
   return (
     <>
@@ -192,7 +192,7 @@ export default function FireSimulation({ active = false, intensity = 80 }: FireS
         pointerEvents: "none", 
         zIndex: 30, 
         opacity: active ? 1 : 0, 
-        transition: "opacity 0.6s ease-in-out",
+        transition: "opacity 0.2s ease-in-out",
         visibility: active ? "visible" : "hidden"
     }}>
       <Canvas 
@@ -201,7 +201,7 @@ export default function FireSimulation({ active = false, intensity = 80 }: FireS
         style={{ pointerEvents: "none" }}
       >
         <ambientLight intensity={2 * (intensity / 80)} />
-        {active && <SimulationContent intensity={intensity} />}
+        <SimulationContent intensity={active ? intensity : 0} active={active} />
       </Canvas>
     </Box>
   );
