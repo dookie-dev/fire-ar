@@ -46,27 +46,27 @@ function getErrorMessage(error: ErrorType) {
   switch (error) {
     case "permission-denied":
       return {
-        title: "Camera Access Denied",
-        message: "Please grant camera permissions to continue. Check your browser settings.",
-        hint: "Click the retry button or allow camera access when prompted.",
+        title: "การเข้าถึงกล้องถูกปฏิเสธ",
+        message: "โปรดอนุญาตให้เข้าถึงกล้องเพื่อดำเนินการต่อ ตรวจสอบการตั้งค่าเบราว์เซอร์ของคุณ",
+        hint: "คลิกปุ่มลองใหม่หรืออนุญาตให้เข้าถึงกล้องเมื่อถูกถาม",
       };
     case "not-found":
       return {
-        title: "No Camera Found",
-        message: "No camera device was detected on this device.",
-        hint: "Make sure your device has a camera and it's not in use by another application.",
+        title: "ไม่พบกล้อง",
+        message: "ไม่พบอุปกรณ์กล้องในเครื่องนี้",
+        hint: "ตรวจสอบให้แน่ใจว่าอุปกรณ์ของคุณมีกล้องและไม่ได้ถูกใช้งานโดยแอปพลิเคชันอื่น",
       };
     case "not-supported":
       return {
-        title: "Browser Not Supported",
-        message: "Your browser doesn't support camera access.",
-        hint: "Please use a modern browser like Chrome, Firefox, Safari, or Edge.",
+        title: "เบราว์เซอร์ไม่รองรับ",
+        message: "เบราว์เซอร์ของคุณไม่รองรับการเข้าถึงกล้อง",
+        hint: "โปรดใช้เบราว์เซอร์ที่ทันสมัย เช่น Chrome, Firefox, Safari หรือ Edge",
       };
     case "unknown":
       return {
-        title: "Camera Error",
-        message: "An unexpected error occurred while accessing the camera.",
-        hint: "Please try again or contact support if the problem persists.",
+        title: "กล้องขัดข้อง",
+        message: "เกิดข้อผิดพลาดที่ไม่คาดคิดขณะเข้าถึงกล้อง",
+        hint: "โปรดลองอีกครั้งหรือติดต่อฝ่ายสนับสนุนหากปัญหายังคงอยู่",
       };
     default:
       return null;
@@ -323,17 +323,17 @@ export default function ARCamera({ isActive = false, onStateChange }: ARCameraPr
             {/* Top Data Reads */}
             <Box sx={{ position: "absolute", top: 30, left: 40, display: "flex", flexDirection: "column", gap: 0.2 }}>
               <Typography sx={{ color: "#00ffff", fontSize: "10px", fontWeight: 800, letterSpacing: 2, textShadow: "0 0 5px #00ffff" }}>
-                SYS_STATUS: ACTIVE
+                สถานะระบบ: ปกติ
               </Typography>
               <Typography sx={{ color: "rgba(255,255,255,0.6)", fontSize: "10px", fontFamily: "monospace" }}>
-                LATENCY: 14MS // BUFF: 0.2S
+                ความหน่วง: 14MS // บัฟเฟอร์: 0.2S
               </Typography>
             </Box>
 
             {/* Bottom Data Reads */}
             <Box sx={{ position: "absolute", bottom: 30, right: 40, textAlign: "right" }}>
               <Typography sx={{ color: fireActive ? "#ff4400" : "#00ffff", fontSize: "10px", fontWeight: 800, letterSpacing: 2 }}>
-                {fireActive ? "[[ TARGET_ACQUIRED ]]" : "[[ SCANNING_AO... ]]"}
+                {fireActive ? "[[ ยืนยันตำแหน่งไฟไหม้ ]]" : "[[ กำลังตรวจสอบพื้นที่... ]]"}
               </Typography>
               <Typography sx={{ color: "#fff", fontSize: "28px", fontWeight: 900, fontFamily: "monospace", lineHeight: 1 }}>
                 {fireActive ? "1,240°C" : "26.4°C"}
@@ -364,7 +364,7 @@ export default function ARCamera({ isActive = false, onStateChange }: ARCameraPr
                   }
                 }}
               >
-                <Typography sx={{ color: "#ff4400", fontSize: "12px", fontWeight: 900, letterSpacing: 3 }}>LOCK</Typography>
+                <Typography sx={{ color: "#ff4400", fontSize: "12px", fontWeight: 900, letterSpacing: 3 }}>ล็อคเป้าหมาย</Typography>
               </Box>
             )}
 

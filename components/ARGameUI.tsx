@@ -24,10 +24,10 @@ interface Option {
 }
 
 const options: Option[] = [
-  { id: "extinguisher", label: "Fire Extinguisher", emoji: "🧯", isCorrect: true },
-  { id: "water", label: "Water", emoji: "💧", isCorrect: false, knowledge: "Water conducts electricity and spreads oil fires! Use an extinguisher instead." },
-  { id: "sand", label: "Sand", emoji: "🪣", isCorrect: false, knowledge: "Sand is too slow for this size of fire. A fire extinguisher is much safer." },
-  { id: "nothing", label: "Do Nothing", emoji: "🚫", isCorrect: false, knowledge: "Doing nothing allows the fire to spread rapidly! Always take safe action." },
+  { id: "extinguisher", label: "ใช้ถังดับเพลิง", emoji: "🧯", isCorrect: true },
+  { id: "water", label: "ใช้น้ำฉีด", emoji: "💧", isCorrect: false, knowledge: "น้ำเป็นสื่อนำไฟฟ้าและทำให้ไฟจากน้ำมันลามมากขึ้น! ควรใช้ถังดับเพลิงแทน" },
+  { id: "sand", label: "ใช้ทรายกลบ", emoji: "🪣", isCorrect: false, knowledge: "ทรายดับไฟขนาดนี้ได้ช้าเกินไป การใช้ถังดับเพลิงจะปลอดภัยกว่ามาก" },
+  { id: "nothing", label: "ไม่ทำอะไรเลย", emoji: "🚫", isCorrect: false, knowledge: "การไม่ทำอะไรเลยจะทำให้ไฟลุกลามอย่างรวดเร็ว! ควรเลือกวิธีที่ปลอดภัยเสมอ" },
 ];
 
 interface ARGameUIProps {
@@ -125,10 +125,10 @@ export default function ARGameUI({ isDetected, intensity, onIntensityChange, onS
           <CameraAltOutlinedIcon sx={{ color: "#004aad", fontSize: 48, filter: "drop-shadow(0 0 8px rgba(0,74,173,0.4))", mb: 1 }} />
           
           <Box sx={{ background: "linear-gradient(90deg, transparent, rgba(0,74,173,0.2), transparent)", py: 1, px: 4, width: "100%", textAlign: "center" }}>
-            <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>Scanning for marker...</Typography>
+            <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem" }}>กำลังค้นหาตำแหน่งไฟ...</Typography>
           </Box>
           <Typography sx={{ color: "#cbd5e1", fontSize: "0.75rem", textAlign: "center", px: 2 }}>
-            Align the fire safety marker within the frame
+            โปรดจ่อกล้องไปที่ตำแหน่งที่เกิดเหตุ
           </Typography>
 
           {/* Simulate button removed as per user request */}
@@ -175,8 +175,8 @@ export default function ARGameUI({ isDetected, intensity, onIntensityChange, onS
         <Box sx={{ ...panelSx, flex: 1, display: "flex", alignItems: "center", p: 1.5, px: 2, gap: 2 }}>
           <AccessTimeIcon sx={{ color: accentColor }} />
           <Box>
-            <Typography sx={{ color: "#64748b", fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1 }}>TIME LEFT</Typography>
-            <Typography sx={{ fontSize: "1.25rem", fontWeight: 800, lineHeight: 1 }}>{timeLeft}s</Typography>
+            <Typography sx={{ color: "#64748b", fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1 }}>เวลาที่เหลือ</Typography>
+            <Typography sx={{ fontSize: "1.25rem", fontWeight: 800, lineHeight: 1 }}>{timeLeft} วินาที</Typography>
           </Box>
         </Box>
 
@@ -184,7 +184,7 @@ export default function ARGameUI({ isDetected, intensity, onIntensityChange, onS
         <Box sx={{ ...panelSx, flex: 1, display: "flex", alignItems: "center", p: 1.5, px: 2, gap: 2 }}>
           <EmojiEventsIcon sx={{ color: accentColor }} />
           <Box>
-            <Typography sx={{ color: "#64748b", fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1 }}>SCORE</Typography>
+            <Typography sx={{ color: "#64748b", fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1 }}>คะแนน</Typography>
             <Typography sx={{ color: "#d97706", fontSize: "1.25rem", fontWeight: 800, lineHeight: 1 }}>{score}</Typography>
           </Box>
         </Box>
@@ -193,7 +193,7 @@ export default function ARGameUI({ isDetected, intensity, onIntensityChange, onS
         <Box sx={{ ...panelSx, flex: 2, display: "flex", alignItems: "center", p: 1.5, px: 2, gap: 2 }}>
           <LocalFireDepartmentIcon sx={{ color: accentColor }} />
           <Box sx={{ flex: 1 }}>
-            <Typography sx={{ color: "#64748b", fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>FIRE INTENSITY</Typography>
+            <Typography sx={{ color: "#64748b", fontSize: "0.6rem", fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>ความแรงของไฟ</Typography>
             <LinearProgress 
                variant="determinate" 
                value={intensity} 
@@ -214,9 +214,9 @@ export default function ARGameUI({ isDetected, intensity, onIntensityChange, onS
       {/* LEFT PANEL: Mission Objective */}
       <Box sx={{ px: 2, maxWidth: 280 }}>
         <Box sx={{ ...panelSx, p: 2 }}>
-          <Typography sx={{ color: accentColor, fontSize: "0.8rem", fontWeight: 800, mb: 1 }}>Mission Objective</Typography>
+          <Typography sx={{ color: accentColor, fontSize: "0.8rem", fontWeight: 800, mb: 1 }}>ภารกิจของคุณ</Typography>
           <Typography sx={{ color: "#475569", fontSize: "0.8rem", lineHeight: 1.5 }}>
-            Quickly identify and select the correct fire suppression method before time runs out!
+            เลือกระบบดับไฟที่ถูกต้องให้เร็วที่สุดก่อนที่เวลาจะหมด!
           </Typography>
         </Box>
       </Box>
@@ -254,12 +254,12 @@ export default function ARGameUI({ isDetected, intensity, onIntensityChange, onS
                         )}
                     </Box>
                     <Typography sx={{ color: accentColor, fontSize: "1.25rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: 1, mb: 1 }}>
-                        {feedback === "correct" ? "CORRECT!" : "WRONG CHOICE!"}
+                        {feedback === "correct" ? "ถูกต้อง!" : "เลือกผิดวิธี!"}
                     </Typography>
                     <Typography sx={{ color: "#475569", fontSize: "0.875rem", textAlign: "center", maxWidth: 240, fontWeight: 500 }}>
                         {feedback === "correct" 
-                            ? "Fire controlled successfully!" 
-                            : (selected ? options.find(o => o.id === selected)?.knowledge : "Wrong choice! Fire is spreading!")}
+                            ? "ควบคุมเพลิงได้สำเร็จ!" 
+                            : (selected ? options.find(o => o.id === selected)?.knowledge : "ไฟกำลังลุกลาม! รีบดับไฟเร็ว!")}
                     </Typography>
                 </Box>
             </Fade>
@@ -270,8 +270,8 @@ export default function ARGameUI({ isDetected, intensity, onIntensityChange, onS
       <Box sx={{ px: 2, pb: 2, width: "100%" }}>
         <Box sx={{ ...panelSx, p: 3, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
             <Box sx={{ textAlign: "center" }}>
-                <Typography sx={{ color: accentColor, fontSize: "0.9rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1 }}>CHOOSE YOUR ACTION</Typography>
-                <Typography sx={{ color: "#64748b", fontSize: "0.75rem", mt: 0.5 }}>Select the correct method to extinguish the fire</Typography>
+                <Typography sx={{ color: accentColor, fontSize: "0.9rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: 1 }}>โปรดเลือกวิธีดับไฟ</Typography>
+                <Typography sx={{ color: "#64748b", fontSize: "0.75rem", mt: 0.5 }}>เลือกวิธีที่ถูกต้องเพื่อควบคุมสถานการณ์</Typography>
             </Box>
 
             <Box sx={{ display: "flex", gap: 2, width: "100%", mt: 1 }}>
