@@ -9,6 +9,7 @@ interface ARViewerProps {
   targetCount: number;
   onDetected?: () => void;
   onLost?: () => void;
+  intensity?: number;
 }
 
 declare global {
@@ -22,6 +23,7 @@ export default function ARViewer({
   targetCount,
   onDetected,
   onLost,
+  intensity = 80,
 }: ARViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [detectedIndices, setDetectedIndices] = useState<Set<number>>(
@@ -171,12 +173,12 @@ export default function ARViewer({
              particles.push(mesh);
           }
           
-          flameGroup.position.y = 0.3; // Lift above base model
-          flameGroup.scale.setScalar(1.5); // Increase overall size
+          flameGroup.position.y = 0.5; // Lift higher
+          flameGroup.scale.setScalar(2.5); // Increase overall size from 1.5 to 2.5
           anchor.group.add(flameGroup);
 
           // 🔥 FIRE GLOW
-          const fireLight = new THREE.PointLight(0xffaa00, 2, 1);
+          const fireLight = new THREE.PointLight(0xffaa00, 2 * (intensity / 80), 2);
           fireLight.position.y = 0.5;
           anchor.group.add(fireLight);
 
@@ -265,8 +267,8 @@ export default function ARViewer({
 
         // Clone the flame group for the motion model
         const fire2 = fireSystems[0].flameGroup.clone();
-        fire2.position.y = 0.2;
-        fire2.scale.setScalar(4.0);
+        fire2.position.y = 0.3;
+        fire2.scale.setScalar(6.5); // Increase from 4.0 to 6.5! Huge fire!
         motionGroup.add(fire2);
         
         // Map cloned objects to the animation loop
@@ -378,9 +380,9 @@ export default function ARViewer({
 
             // Animate Fire Meshes
             sys.particles.forEach((mesh: any) => {
-               mesh.position.y += 0.015 * mesh.userData.speed;
-               const life = (mesh.position.y - mesh.userData.yOffset) / (mesh.userData.isSmoke ? 2.5 : 1.5);
-               mesh.scale.setScalar(mesh.userData.baseScale * Math.max(0.01, 1 - life));
+               mesh.position.y += 0.02 * mesh.userData.speed * (intensity / 80); // Faster rising
+               const life = (mesh.position.y - mesh.userData.yOffset) / (mesh.userData.isSmoke ? 3.0 : 2.0); // Taller fire
+               mesh.scale.setScalar(mesh.userData.baseScale * Math.max(0.01, 1 - life) * (intensity / 80) * 1.5); // 1.5x bigger meshes
                
                if (life > 1.0) {
                  mesh.position.y = mesh.userData.yOffset;

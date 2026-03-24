@@ -80,6 +80,7 @@ export default function Hero() {
   const [markerData, setMarkerData] = useState<{ image: string; mindData: Uint8Array; targetCount: number } | null>(null);
   const [isDetected, setIsDetected] = useState(false);
   const [loadingMarkers, setLoadingMarkers] = useState(true);
+  const [intensity, setIntensity] = useState(80); // 🔥 Lifted state for shared fire effect!
 
   // Auto-load existing markers from server on mount
   React.useEffect(() => {
@@ -142,6 +143,7 @@ export default function Hero() {
   const handleCloseCamera = () => {
     setCameraOpen(false);
     setIsDetected(false);
+    setIntensity(80); // Reset fire for next run
   };
 
   return (
@@ -422,13 +424,16 @@ export default function Hero() {
                   targetCount={markerData.targetCount}
                   onDetected={() => setIsDetected(true)}
                   onLost={() => setIsDetected(false)}
+                  intensity={intensity}
                 />
                 <ARGameUI
                   isDetected={isDetected}
+                  intensity={intensity}
+                  onIntensityChange={setIntensity}
                   onSimulateDetect={() => setIsDetected(true)}
                   onCorrectComplete={() => {
                     setIsDetected(false);
-                    // The user requested to keep the camera open so they can scan again!
+                    setIntensity(0);
                   }}
                 />
               </>

@@ -32,14 +32,15 @@ const options: Option[] = [
 
 interface ARGameUIProps {
   isDetected: boolean;
+  intensity: number;
+  onIntensityChange: (intensity: number) => void;
   onSimulateDetect: () => void;
   onCorrectComplete: () => void;
 }
 
-export default function ARGameUI({ isDetected, onSimulateDetect, onCorrectComplete }: ARGameUIProps) {
+export default function ARGameUI({ isDetected, intensity, onIntensityChange, onSimulateDetect, onCorrectComplete }: ARGameUIProps) {
   const [timeLeft, setTimeLeft] = useState(27);
   const [score, setScore] = useState(0);
-  const [intensity, setIntensity] = useState(80);
   const [selected, setSelected] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<"none" | "correct" | "wrong">("none");
 
@@ -47,7 +48,6 @@ export default function ARGameUI({ isDetected, onSimulateDetect, onCorrectComple
   useEffect(() => {
     if (!isDetected) {
       setTimeLeft(27);
-      setIntensity(80);
       setSelected(null);
       setFeedback("none");
       // Intentionally keeping `score` so it accumulates across replays
@@ -70,13 +70,13 @@ export default function ARGameUI({ isDetected, onSimulateDetect, onCorrectComple
     if (option.isCorrect) {
       setFeedback("correct");
       setScore((prev) => prev + 80);
-      setIntensity(0);
+      onIntensityChange(0);
       setTimeout(() => {
         onCorrectComplete();
       }, 3000);
     } else {
       setFeedback("wrong");
-      setIntensity((prev) => Math.min(100, prev + 20));
+      onIntensityChange(Math.min(100, intensity + 20));
       setTimeout(() => {
         setFeedback("none");
         setSelected(null);
@@ -226,7 +226,10 @@ export default function ARGameUI({ isDetected, onSimulateDetect, onCorrectComple
         
         {/* 🔥 THE INCREDIBLE REALISTIC FIRE EFFECT OVERLAY 🔥 */}
         <Box sx={{ position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none" }}>
-           <FireSimulation active={isDetected && intensity > 0 && feedback !== "correct"} />
+           <FireSimulation 
+              active={isDetected && intensity > 0 && feedback !== "correct"} 
+              intensity={intensity} 
+           />
         </Box>
 
         {/* CENTER FEEDBACK POPUP */}
